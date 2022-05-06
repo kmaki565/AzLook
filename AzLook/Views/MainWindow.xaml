@@ -17,6 +17,15 @@
     </Window.DataContext>
 
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Connect to Azure"/>
+                <MenuItem Header="_Open local log"/>
+                <MenuItem Header="_Export"/>
+                <Separator />
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}" />
+            </MenuItem>
+        </Menu>
         <StatusBar DockPanel.Dock="Bottom" >
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusText}" />

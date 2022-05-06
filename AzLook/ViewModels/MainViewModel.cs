@@ -22,6 +22,7 @@ namespace AzLook.ViewModels
         public MainViewModel()
         {
             RefreshCommand = new AsyncRelayCommand(Refresh);
+            ExitCommand = new RelayCommand(Exit);
 
             Logs = new ObservableCollection<LogItem>();
             LogsView = CollectionViewSource.GetDefaultView(Logs);
@@ -87,6 +88,12 @@ namespace AzLook.ViewModels
             UpdateStatusText();
         }
 
+        public ICommand ExitCommand { get; }
+        private void Exit()
+        {
+            Application.Current.MainWindow.Close();
+        }
+
         private bool OnFilterTriggered(object item)
         {
             if (item is LogItem LogItem)
@@ -103,5 +110,6 @@ namespace AzLook.ViewModels
                 $"Loading events... {additionalNote}" :
                 $"{Logs.Count} events loaded. {additionalNote}";
         }
+
     }
 }
