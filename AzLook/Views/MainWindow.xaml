@@ -1,0 +1,35 @@
+﻿<Window x:Class="AzLook.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:AzLook.ViewModels"
+        xmlns:local="clr-namespace:AzLook.Views" 
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="OnLoaded">
+    <Window.Resources>
+        <CollectionViewSource x:Key="MyCvs" Source="{Binding Logs}"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Source filter: "/>
+            <TextBox Text="{Binding SourceFilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" MinWidth="60"/>
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding LogsView}" IsReadOnly="True" SelectedCellsChanged="DataGrid_SelectedCellsChanged"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button x:Name="RefreshButton" Content="Refresh" Command="{Binding RefreshCommand}" Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>
