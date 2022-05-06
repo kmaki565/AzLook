@@ -57,19 +57,34 @@ namespace AzLook.ViewModels
             }
         }
 
+        private string statusText;
+
+        public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
+
+        private bool isUpdating;
+
+        public bool IsUpdating { get => isUpdating; set => SetProperty(ref isUpdating, value); }
+
         public ICommand RefreshCommand { get; }
         private async Task Refresh()
         {
             if (downloader == null)
+            {
+                UpdateStatusText("Please specify Azure SAS URL.");
                 return;
+            }   
 
+            IsUpdating = true;
+            Logs.Clear();
+            UpdateStatusText();
             await downloader.DownloadLog(DateTime.Now);
             LogReader reader = new LogReader(@"myLog.txt");
-            Logs.Clear();
             foreach (var item in reader.ReadItems())
             {
                 Logs.Add(item);
             }
+            IsUpdating = false;
+            UpdateStatusText();
         }
 
         private bool OnFilterTriggered(object item)
@@ -82,5 +97,11 @@ namespace AzLook.ViewModels
             return true;
         }
 
+        private void UpdateStatusText(string additionalNote = "")
+        {
+            StatusText = IsUpdating ?
+                $"Loading events... {additionalNote}" :
+                $"{Logs.Count} events loaded. {additionalNote}";
+        }
     }
 }

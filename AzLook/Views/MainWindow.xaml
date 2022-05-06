@@ -16,20 +16,27 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition />
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom" >
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusText}" />
+            </StatusBarItem>
+        </StatusBar>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Text="Source filter: "/>
-            <TextBox Text="{Binding SourceFilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" MinWidth="60"/>
-        </StackPanel>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding LogsView}" IsReadOnly="True" SelectedCellsChanged="DataGrid_SelectedCellsChanged"/>
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button x:Name="RefreshButton" Content="Refresh" Command="{Binding RefreshCommand}" Margin="10,0,0,0"/>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="Source filter: "/>
+                <TextBox Text="{Binding SourceFilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" MinWidth="60"/>
+            </StackPanel>
+            <DataGrid Grid.Row="1" ItemsSource="{Binding LogsView}" IsReadOnly="True" SelectedCellsChanged="DataGrid_SelectedCellsChanged"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button x:Name="RefreshButton" Content="Refresh" Command="{Binding RefreshCommand}" Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
 </Window>
