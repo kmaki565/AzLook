@@ -23,6 +23,7 @@ namespace AzLook.ViewModels
         {
             RefreshCommand = new AsyncRelayCommand(Refresh);
             ExitCommand = new RelayCommand(Exit);
+            SasInputCommand = new RelayCommand(SasInput);
 
             Logs = new ObservableCollection<LogItem>();
             LogsView = CollectionViewSource.GetDefaultView(Logs);
@@ -92,6 +93,19 @@ namespace AzLook.ViewModels
         private void Exit()
         {
             Application.Current.MainWindow.Close();
+        }
+
+        public ICommand SasInputCommand { get; }
+
+        private void SasInput()
+        {
+            var window = new Views.SasInputWindow(Settings.Default.AzureSasUrl);
+            if (window.ShowDialog() == true)
+            {
+                Settings.Default.AzureSasUrl = window.Answer;
+                Settings.Default.Save();
+                downloader = new Downloader(window.Answer);
+            }
         }
 
         private bool OnFilterTriggered(object item)

@@ -19,7 +19,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Connect to Azure"/>
+                <MenuItem Header="_Connect to Azure" Command="{Binding SasInputCommand}"/>
                 <MenuItem Header="_Open local log"/>
                 <MenuItem Header="_Export"/>
                 <Separator />
