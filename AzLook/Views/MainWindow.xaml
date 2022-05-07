@@ -15,6 +15,9 @@
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
+    </Window.InputBindings>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -25,6 +28,7 @@
                 <Separator />
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}" />
             </MenuItem>
+            <MenuItem Header="_Refresh" x:Name="RefreshMenu" Command="{Binding RefreshCommand}"/>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" >
             <StatusBarItem>
@@ -35,7 +39,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition />
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -43,9 +46,6 @@
                 <TextBox Text="{Binding SourceFilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" MinWidth="60"/>
             </StackPanel>
             <DataGrid Grid.Row="1" ItemsSource="{Binding LogsView}" IsReadOnly="True" SelectedCellsChanged="DataGrid_SelectedCellsChanged"/>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button x:Name="RefreshButton" Content="Refresh" Command="{Binding RefreshCommand}" Margin="10,0,0,0"/>
-            </StackPanel>
         </Grid>
     </DockPanel>
 </Window>

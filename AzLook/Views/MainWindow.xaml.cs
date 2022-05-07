@@ -30,7 +30,7 @@ namespace AzLook.Views
             if (string.IsNullOrEmpty(Settings.Default.AzureSasUrl))
                 MenuItem_Click(sender, null);
             else
-                RefreshButton.Command.Execute(RefreshButton.CommandParameter);
+                RefreshMenu.Command.Execute(RefreshMenu.CommandParameter);
         }
 
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -46,7 +46,7 @@ namespace AzLook.Views
             {
                 Settings.Default.AzureSasUrl = window.Answer;
                 Settings.Default.Save();
-                RefreshButton.Command.Execute(RefreshButton.CommandParameter);
+                RefreshMenu.Command.Execute(RefreshMenu.CommandParameter);
             }
         }
     }
