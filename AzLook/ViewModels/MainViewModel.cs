@@ -18,25 +18,14 @@ namespace AzLook.ViewModels
 {
     internal class MainViewModel : ObservableObject
     {
-        private Downloader downloader;
         public MainViewModel()
         {
             RefreshCommand = new AsyncRelayCommand(Refresh);
             ExitCommand = new RelayCommand(Exit);
-            SasInputCommand = new RelayCommand(SasInput);
 
             Logs = new ObservableCollection<LogItem>();
             LogsView = CollectionViewSource.GetDefaultView(Logs);
             LogsView.Filter = OnFilterTriggered;
-
-            string sasUrl = Settings.Default.AzureSasUrl;
-            if (string.IsNullOrEmpty(sasUrl))
-            {
-                MessageBox.Show("Please specify Azure SAS URL for the log container in app settings.");
-                downloader = null;
-            }
-            else
-                downloader = new Downloader(sasUrl);
         }
 
         public ICollectionView LogsView { get; private set; }
@@ -70,42 +59,35 @@ namespace AzLook.ViewModels
         public ICommand RefreshCommand { get; }
         private async Task Refresh()
         {
-            if (downloader == null)
-            {
-                UpdateStatusText("Please specify Azure SAS URL.");
-                return;
-            }   
-
             IsUpdating = true;
             Logs.Clear();
             UpdateStatusText();
-            await downloader.DownloadLog(DateTime.Now);
-            LogReader reader = new LogReader(@"myLog.txt");
-            foreach (var item in reader.ReadItems())
+            string additionalNote = "";
+            try
             {
-                Logs.Add(item);
+                Downloader downloader = new Downloader(Settings.Default.AzureSasUrl);
+                await downloader.DownloadLog(DateTime.Now);
+                LogReader reader = new LogReader(@"myLog.txt");
+                foreach (var item in reader.ReadItems())
+                {
+                    Logs.Add(item);
+                }
             }
-            IsUpdating = false;
-            UpdateStatusText();
+            catch (Exception ex)
+            {
+                additionalNote = ex.Message;
+            }
+            finally
+            {
+                IsUpdating = false;
+                UpdateStatusText(additionalNote);
+            }
         }
 
         public ICommand ExitCommand { get; }
         private void Exit()
         {
             Application.Current.MainWindow.Close();
-        }
-
-        public ICommand SasInputCommand { get; }
-
-        private void SasInput()
-        {
-            var window = new Views.SasInputWindow(Settings.Default.AzureSasUrl);
-            if (window.ShowDialog() == true)
-            {
-                Settings.Default.AzureSasUrl = window.Answer;
-                Settings.Default.Save();
-                downloader = new Downloader(window.Answer);
-            }
         }
 
         private bool OnFilterTriggered(object item)

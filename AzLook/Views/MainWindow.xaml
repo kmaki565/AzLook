@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:AzLook.Views" 
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="AzLook" Height="450" Width="800"
         Loaded="OnLoaded">
     <Window.Resources>
         <CollectionViewSource x:Key="MyCvs" Source="{Binding Logs}"/>
@@ -19,7 +19,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Connect to Azure" Command="{Binding SasInputCommand}"/>
+                <MenuItem Header="_Connect to Azure" Click="MenuItem_Click"/>
                 <MenuItem Header="_Open local log"/>
                 <MenuItem Header="_Export"/>
                 <Separator />
