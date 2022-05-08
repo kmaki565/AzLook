@@ -10,19 +10,17 @@ namespace AzLook.Models
 {
     internal class LogReader
     {
-        string filePath;
-        public LogReader(string path)
+        MemoryStream _stream;
+        public LogReader(MemoryStream stream)
         {
-            if (!File.Exists(path))
-                throw new FileNotFoundException();
-
-            filePath = path;
+            _stream = stream ?? throw new ArgumentNullException(nameof(stream));
+            _stream.Position = 0;
         }
 
         public List<LogItem> ReadItems()
         {
             var logItems = new List<LogItem>();
-            using (var sr = new StreamReader(filePath, Encoding.UTF8))
+            using (var sr = new StreamReader(_stream, Encoding.UTF8))
             {
                 while (!sr.EndOfStream)
                 {

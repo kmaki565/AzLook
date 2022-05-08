@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AzLook.Models
@@ -14,15 +15,29 @@ namespace AzLook.Models
         {
             az = new AzBlob(sasUrl);
         }
-        public async Task DownloadLog(DateTime dateTime)
+
+        /// <summary>
+        /// Downloads log files for specified time period into stream.
+        /// </summary>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        public async Task<Stream> DownloadLogData(DateTime begin, DateTime end)
         {
             var logBlobs = az.ListBlobs();
-            var targetLog = logBlobs.FirstOrDefault(x => x.Contains(dateTime.ToString("yyyy/MM/dd/HH")));
-                
-            if (targetLog == null) 
-                throw new FileNotFoundException();
-            
-            await az.DownloadBlob(targetLog, "myLog.txt", overwrite: true);
+            var ms = new MemoryStream();
+            DateTime time = begin;
+            while (string.Compare(time.ToString("yyyy/MM/dd/HH"), end.ToString("yyyy/MM/dd/HH")) <= 0)  //@BUG
+            {
+                foreach (var logBlob in logBlobs.Where(x => Regex.IsMatch(x, $@".+/{time.ToString("yyyy/MM/dd/HH")}.+\.txt")))
+                {
+                    var blobData = await az.DownloadBlobToStream(logBlob) as MemoryStream;
+                    blobData.Position = 0;
+                    blobData.CopyTo(ms);
+                }
+                time = time.AddHours(1);
+            }
+            return ms;
         }
     }
 }

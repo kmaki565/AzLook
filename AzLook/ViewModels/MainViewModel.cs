@@ -49,11 +49,9 @@ namespace AzLook.ViewModels
         }
 
         private string statusText;
-
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
 
         private bool isUpdating;
-
         public bool IsUpdating { get => isUpdating; set => SetProperty(ref isUpdating, value); }
 
         public ICommand RefreshCommand { get; }
@@ -66,12 +64,13 @@ namespace AzLook.ViewModels
             try
             {
                 Downloader downloader = new Downloader(Settings.Default.AzureSasUrl);
-                await downloader.DownloadLog(DateTime.Now);
-                LogReader reader = new LogReader(@"myLog.txt");
+                MemoryStream ms = await downloader.DownloadLogData(DateTime.Now.AddHours(-3), DateTime.Now) as MemoryStream;
+                LogReader reader = new LogReader(ms);
                 foreach (var item in reader.ReadItems())
                 {
                     Logs.Add(item);
                 }
+                //TODO: Sort logs in case multiple files in an hour
             }
             catch (Exception ex)
             {

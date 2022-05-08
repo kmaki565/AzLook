@@ -81,6 +81,18 @@ namespace AzLook.Models
                 throw;
             }
         }
+        public async Task<Stream> DownloadBlobToStream(string blobName)
+        {
+            CheckNetwork();
+            BlobClient blobClient = _containerClient.GetBlobClient(blobName);
+
+            if (blobClient.BlobContainerName != _containerClient.Name || blobClient.Name != blobName)
+                throw new InvalidOperationException("Supplied SAS URL is not valid for this operation.");
+
+            var ms = new MemoryStream();
+            await blobClient.DownloadToAsync(ms);
+            return ms;
+        }
         
         /// <summary>
         /// Confirms network connection. Throws exception if not connected.
